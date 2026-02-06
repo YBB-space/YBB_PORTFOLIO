@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deogle - 편리한 덕인생활</title>
+    <style>
+        @font-face {
+            font-family: 'LINESeedKR-Bd';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+            font-weight: 100;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: #1a1a1a;
+            font-family: LINESeedKR-Bd, sans-serif;
+            position: relative;
+        }
+
+        /* 스크롤 진행 바 스타일 */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            right: -50px;
+            width: 5px;
+            height: 100%;
+            background: #ddd;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: right 0.3s ease-out;
+        }
+
+        .scroll-progress-inner {
+            width: 100%;
+            height: 0;
+            background: #01e188;
+            transition: height 0.25s ease;
+            position: relative;
+        }
+
+        .rocket {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: url('https://source.unsplash.com/random/100x100?rocket') no-repeat center center;
+            background-size: contain;
+            transition: transform 0.25s ease;
+        }
+
+        header {
+            background: #000;
+            padding: 20px 0;
+            border-bottom: 1px solid #000;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 0.6s forwards;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 2em;
+            color: #01e188;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #007aff;
+        }
+
+        .hero {
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('https://source.unsplash.com/random/1600x900?space') no-repeat center center;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            padding: 0 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s 0.5s forwards;
+            backdrop-filter: blur(5px);
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 4em;
+            font-weight: 700;
+            margin-bottom: 0.5em;
+            line-height: 1.1;
+            animation: bounce 1.5s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            margin-bottom: 1.5em;
+            font-weight: 300;
+            animation: pulse 2s infinite;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #ffffff;
+            color: #333;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            border: 2px solid #858585;
+        }
+
+        .cta-button:hover {
+            background-color: #d2d2d2;
+            transform: scale(1.05);
+        }
+
+        /* 애니메이션 효과 */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            0% { border-right-color: transparent; }
+            100% { border-right-color: rgba(255, 255, 255, 0.75); }
+        }
+
+        /* 섹션 스타일 */
+        section {
+            padding: 80px 20px;
+            text-align: center;
+            background: #2c2c2c;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.8em;
+            margin-bottom: 40px;
+            color: #007aff;
+            font-weight: bold;
+        }
+
+        .about img, .intro img, .services img, .portfolio img, .contact img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .about p, .intro p, .services p, .portfolio p, .contact p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #ccc;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 로켓 메이킹 섹션 스타일 */
+        .services {
+            background: #000;
+            padding: 100px 0;
+            color: #fff;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
+        }
+
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0.5) 0%, transparent 100%);
+            z-index: 0;
+        }
+
+        .services .rocket-img {
+            width: 300px;
+            margin: 50px auto;
+            display: block;
+            z-index: 1;
+            animation: rocketAnimation 10s infinite;
+        }
+
+        .services h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            z-index: 1;
+            color: #01e188;
+            position: relative;
+        }
+
+        .services p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        @keyframes rocketAnimation {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-30px);
+            }
+        }
+
+        @keyframes textGlow {
+            from {
+                text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(0, 255, 136, 1);
+            }
+        }
+
+        footer {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #000;
+        }
+
+        /* 유튜브 iframe 스타일 */
+        .video-container {
+            margin: 30px auto;
+            max-width: 800px;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16/9;
+            display: block;
+            margin-left: 0;
+        }
+
+        /* 타이핑 애니메이션 */
+        .typing-text {
+            display: inline-block;
+            font-size: 2em;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid rgba(255, 255, 255, 0.75);
+            animation: typing 4s steps(30, end), blink 0.75s step-end infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- 스크롤 진행 바 -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-inner">
+            <div class="rocket"></div>
+        </div>
+    </div>
+
+    <!-- 헤더 -->
+    <header>
+        <nav>
+            <div class="logo">윤보배 <span style="color: #007aff;">portfolio</span></div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Rocket making</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1>
+                <span class="typing-text">우주로 향하는,<br><span style="color: #007aff;">portfolio</span></span>
+            </h1>
+            <p>기술과 창의력의 결합한 윤보배의 포트폴리오</p>
+            <a href="#about" class="cta-button">더 알아보기</a>
+        </div>
+    </section>
+
+    <!-- 소개 섹션 -->
+    <section id="about" class="about">
+        <h1>🤔</h1>
+        <h2 class="section-title">About Me</h2>
+        <p>저는 창의적이고 혁신적인 웹 개발자로, 사용자 경험과 디자인의 조화를 이루는 웹사이트를 만듭니다.</p>
+    </section>
+
+    <!-- 서비스 섹션 -->
+    <section id="services" class="services">
+        <h2 style="text-align:left; left: 100px;" class="section-title"><span style="color: #ffffff">중학교 시절,</span><br>로켓 개발의 첫걸음</h2>
+        <p style="text-align:left; left: -250px;">중학교 시절, 저는 우주와 비행에 대한 꿈을 가지고 있었습니다. 그 꿈을 실현하기 위해 모델 로켓 개발에 뛰어들었습니다. 처음에는 간단한 키트로 시작했지만, 점차 제 손으로 직접 설계하고 제작하는 과정에 매료되었습니다.</p>
+        <h2 style="text-align:left; left: 100px; color: #ffffff;">도전의 대가</h2>
+        <p style="text-align:left; left: -250px;">모델 로켓 개발은 단순한 취미가 아니었습니다. 매번 새로운 도전에 직면하며, 문제 해결 능력과 창의력을 키울 수 있었습니다. 로켓 모터 제작과 연소 실패 그리고 성공을 반복하면서 로켓의 비행 성능을 향상시키는 방법을 배웠고, 점점 더 정교한 로켓을 만들 능력이 생겼습니다.</p>
+        <h2 style="text-align:center" class="section-title"><span style="color: #ffffff"><br>5년간의 노력,</span><br>Whale v1 첫 발사</h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/mjxyrawCz1A" frameborder="0" allowfullscreen style="border-radius: 10px"></iframe>
+        </div>
+        <p style="text-align:center"><br>첫 발사 당시 로켓은 예상대로 비행하지 않았습니다. 로켓이 공중에 올라가자마자 제어불능 상태에 빠졌습니다. 이 실패의 원인을 분석하기 위해, 발사 후 로켓의 비행 데이터를 철저히 검토했습니다. <br><br><br>조사 결과, 문제의 핵심은 비행 컨트롤 모듈의 코드에 있음을 발견했습니다. 자세 제어를 담당하는 서보모터의 핀 제어각이 기준치 이상으로 설정되어 있었고, 이로 인해 로켓이 비행 중 제어 불능 상태에 빠진 것이었습니다. 서보모터의 제어각이 비정상적으로 설정된 것이 비행 안정성을 해쳤던 것입니다.</p>
+        <h2 style="text-align:left; left: 100px; color: #ffffff;"><br>미래의 비전</h2>
+        <p style="text-align:left; left: -250px;">모델 로켓 개발을 통해 얻은 경험과 지식은 제 인생에 큰 영향을 미쳤습니다. 이제는 이 경험을 바탕으로 더 큰 목표를 향해 나아가고 있습니다. 기술적 도전과 혁신을 통해 우주 탐사의 꿈을 실현하고, 더 나아가 사회에 긍정적인 영향을 미치는 프로젝트에 참여하고자 합니다.</p>
+    </section>
+
+    <!-- 연락처 섹션 -->
+    <section id="contact" class="contact">
+        <h2 class="section-title">Contact Me</h2>
+        <p>저와 연락을 원하신다면 직접 이메일을 보내주세요. 빠르게 답변 드리겠습니다.</p>
+        <p>📧 ybb1833@naver.com</p>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <p>&copy; 2024 윤보배 Portfolio. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 스크롤 진행 바 애니메이션 및 로켓 이동
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.querySelector('.scroll-progress');
+            const scrollProgressInner = document.querySelector('.scroll-progress-inner');
+            const rocket = document.querySelector('.rocket');
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercentage = (window.scrollY / totalHeight) * 100;
+
+            // 첫 섹션 도달 시 선이 나타나도록 설정
+            if (window.scrollY > 0) {
+                scrollProgress.style.right = '0';
+            } else {
+                scrollProgress.style.right = '-50px';
+            }
+
+            scrollProgressInner.style.height = scrollPercentage + '%';
+            rocket.style.transform = `translateY(-${scrollPercentage}%)`;
+        });
+
+        // 스크롤 애니메이션 적용
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                if (sectionTop < windowHeight * 0.9) {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
